@@ -1,0 +1,55 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy.io
+mat = scipy.io.loadmat('matlab.mat')
+fq=mat['fq']
+time= mat['t']
+ht=mat['ht']
+Power=mat['powe']
+P = Power[1, :, :]
+PP=P[26,:]
+# Widen the plot by changing the x-axis limits
+plt.ylim((0.0, 1))
+plt.xlim((-1, 1))
+# Find the index of the maximum value in PP
+#f1 = np.argmax(PP)
+
+# Calculate the average of the two values on either side of f1
+#avg = (PP[f1 - 1] + PP[f1 + 1]) / 2
+
+# Replace the value at f1 with the average
+#PP[f1] = avg
+
+# Plot the data
+plt.plot(fq,PP)  # Plotting the data
+plt.xlabel('Frequency')  # Adding a label to the x-axis
+plt.ylabel('Power')  # Adding a label to the y-axis
+plt.title('Plot of frequency and power ')  # Adding a title to the plot
+
+plt.show()
+
+# calculation of ECHO POWER
+
+frequency = [fq]  # List or array of frequencies
+Power = [PP]  # List or array of power values
+
+Echo=sum(PP) 
+print ("ECHO POWER :", Echo)
+
+#calculation of DOPPLER SHIFT
+fd = 0
+for i in range(1, 513):
+    f = fq[i-1] * PP[i-1]
+    fd = fd + f
+
+Doppler = fd / Echo
+print("DOPPLER SHIFT :" ,Doppler  )
+
+#calculation of SPECTRAL WIDTH
+qd = 0
+for i in range(1, 513):
+    q = (fq[i-1] - Doppler)**2 * PP[i-1]
+    qd = qd + q
+
+SW = qd / Echo
+print("SPECTRAL WIDTH :" , SW)
