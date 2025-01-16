@@ -1,0 +1,41 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy.io
+mat = scipy.io.loadmat('matlab1')
+fq=mat['fq']
+time= mat['t']
+ht=mat['ht']
+Power=mat['powe']
+P = Power[2, :, :]
+
+
+
+
+# Assuming you have 'power' and 'ht' arrays defined earlier
+# power should be a 2D array with 151 rows and some number of columns
+
+
+qd=0
+Data = []
+for i in range(0, 149):
+    PP = P[i , :]
+    Echo=sum(PP) 
+    fd = 0
+    for j in range(0,511):
+        f = fq[j] * PP[j]
+        fd = fd + f
+        Doppler = fd / Echo
+    #q = (fq[i-1] - Doppler)**2 * PP[i-1]
+    #qd = qd + q
+    #SW = qd / Echo
+    Ht = float(ht[i])
+    data = [Ht,Doppler]
+    Data.append(data)
+
+Data = np.array(Data)
+plt.plot(Data[:, 1], Data[:, 0])
+plt.ylim((0.0,20 ))
+plt.xlabel('Doppler Width (Hz)')
+plt.ylabel('Height (km)')
+plt.title('Plot of DOPPLER WIDTH and HEIGHT ')
+plt.show()
